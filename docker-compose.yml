@@ -1,0 +1,16 @@
+# Docker Compose configuration for Expense Splitter backend with PostgreSQL
+services:
+  db:
+    image: postgres:16
+    container_name: expense_splitter_db
+    environment:
+      POSTGRES_USER: expense
+      POSTGRES_PASSWORD: expense
+      POSTGRES_DB: expense_splitter
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
