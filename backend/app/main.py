@@ -6,6 +6,12 @@ from app.db import get_db
 from app import schemas
 from app.routes_auth import register_user
 
+from fastapi.security import OAuth2PasswordRequestForm
+from app.routes_auth import register_user, login_user
+
+from app.security import get_current_user
+from app import models
+
 app = FastAPI()
 
 @app.get("/health")
@@ -20,3 +26,11 @@ def db_check(db: Session = Depends(get_db)):
 @app.post("/auth/register", response_model=schemas.UserOut)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return register_user(user, db)
+
+@app.post("/auth/login", response_model=schemas.Token)
+def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    return login_user(form.username, form.password, db)
+
+@app.get("/me", response_model=schemas.UserOut)
+def me(current_user: models.User = Depends(get_current_user)):
+    return current_user
